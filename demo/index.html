@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Omnimise Selective Verification Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Gradients -->
+  <div class="bg-gradient bg-purple"></div>
+  <div class="bg-gradient bg-cyan"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo-container">
+      <span class="logo-icon">▲</span>
+      <span class="logo-text">OMNIMISE</span>
+      <span class="badge">Sovereign Identity Suite</span>
+    </div>
+    <div class="status-indicator">
+      <div class="pulse-dot green"></div>
+      <span class="status-text">Client Node: Active (Local-First)</span>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="dashboard-grid">
+
+    <!-- Column 1: Local Credential Vault -->
+    <section class="panel vault-panel">
+      <div class="panel-header">
+        <h2>🔒 Client Vault (Decrypted LocalStorage)</h2>
+        <p class="panel-subtitle">Select which attributes you consent to share</p>
+      </div>
+
+      <div class="credential-cards">
+        <!-- Card 1: Degree -->
+        <div class="cred-card active" data-credential="degree">
+          <div class="card-header">
+            <span class="card-icon">🎓</span>
+            <div class="card-title-group">
+              <h3>B.Tech Degree Certificate</h3>
+              <p>Issued by: IIT Bombay</p>
+            </div>
+            <input type="checkbox" class="cred-select" checked disabled>
+          </div>
+          <div class="card-attributes">
+            <label class="attr-row">
+              <span class="attr-name">Holder Name</span>
+              <span class="attr-val">Siddharth Sharma</span>
+              <input type="checkbox" data-attr="holder" checked>
+            </label>
+            <label class="attr-row">
+              <span class="attr-name">Department</span>
+              <span class="attr-val">Computer Science & Eng</span>
+              <input type="checkbox" data-attr="department" checked>
+            </label>
+            <label class="attr-row">
+              <span class="attr-name">Graduation Year</span>
+              <span class="attr-val">2025</span>
+              <input type="checkbox" data-attr="year" checked>
+            </label>
+            <label class="attr-row critical">
+              <span class="attr-name">Cumulative GPA</span>
+              <span class="attr-val">9.42 / 10.0</span>
+              <input type="checkbox" data-attr="gpa">
+            </label>
+          </div>
+        </div>
+
+        <!-- Card 2: Passport -->
+        <div class="cred-card" data-credential="passport">
+          <div class="card-header">
+            <span class="card-icon">🛂</span>
+            <div class="card-title-group">
+              <h3>Sovereign Passport Proof</h3>
+              <p>Issued by: Govt of India</p>
+            </div>
+            <input type="checkbox" class="cred-select" id="toggle-passport">
+          </div>
+          <div class="card-attributes disabled" id="passport-attrs">
+            <label class="attr-row">
+              <span class="attr-name">Full Name</span>
+              <span class="attr-val">Siddharth Sharma</span>
+              <input type="checkbox" data-attr="passport-name" disabled>
+            </label>
+            <label class="attr-row">
+              <span class="attr-name">Passport Number</span>
+              <span class="attr-val">Z819208A</span>
+              <input type="checkbox" data-attr="passport-num" disabled>
+            </label>
+            <label class="attr-row">
+              <span class="attr-name">Date of Birth</span>
+              <span class="attr-val">12-Aug-2003</span>
+              <input type="checkbox" data-attr="passport-dob" disabled>
+            </label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Column 2: Consent Sharing Broker (QR Center) -->
+    <section class="panel share-panel">
+      <div class="panel-header">
+        <h2>⚡ Ephemeral Consent Generator</h2>
+        <p class="panel-subtitle">Create a temporary cryptographic data tunnel</p>
+      </div>
+
+      <div class="share-container">
+        <div class="share-actions">
+          <button id="btn-generate" class="btn primary">Generate Ephemeral QR</button>
+        </div>
+
+        <div class="qr-display-container hidden" id="qr-section">
+          <div class="qr-wrapper">
+            <!-- Simulated QR Code -->
+            <div class="qr-code" id="qr-code">
+              <div class="qr-square qr-tl"></div>
+              <div class="qr-square qr-tr"></div>
+              <div class="qr-square qr-bl"></div>
+              <!-- Center Logo -->
+              <div class="qr-logo">▲</div>
+              <!-- Generative QR matrix rows -->
+              <div class="qr-matrix"></div>
+            </div>
+            <div class="scanning-line"></div>
+          </div>
+          
+          <div class="session-timer">
+            <span class="timer-label">Tunnel TTL:</span>
+            <span class="timer-value" id="timer">05:00</span>
+          </div>
+
+          <div class="session-status">
+            <span class="status-label">Status:</span>
+            <span class="status-value waiting" id="session-status-text">Waiting for Verifier scan...</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Column 3: Verifier Portal (Simulated Employer) -->
+    <section class="panel verifier-panel">
+      <div class="panel-header">
+        <h2>💼 Verifier Portal (Employer View)</h2>
+        <p class="panel-subtitle">Simulates scanning the QR in a browser window</p>
+      </div>
+
+      <div class="verifier-display">
+        <div class="verifier-placeholder" id="verifier-empty">
+          <span class="empty-icon">🖨️</span>
+          <h3>No Active Verification Session</h3>
+          <p>Click "Generate Ephemeral QR" and the verifier will automatically "scan" and link via WebSockets.</p>
+        </div>
+
+        <div class="verifier-content hidden" id="verifier-loaded">
+          <div class="verifier-header-inline">
+            <div class="pulse-dot green"></div>
+            <h3>P2P Secure Socket Established</h3>
+          </div>
+          <div class="jwe-notice">
+            🔒 Payload Decrypted in Memory (Unsigned WebAuthn verified)
+          </div>
+
+          <div class="disclosed-claims">
+            <h4>Decrypted Verified Attributes:</h4>
+            <ul id="claims-list"></ul>
+          </div>
+
+          <div class="audit-badge green">
+            ✓ Signature Valid (IIT Bombay Public Key verified)
+          </div>
+
+          <button id="btn-disconnect" class="btn danger">Disconnect & Wipe Session</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer Log Panel -->
+  <footer>
+    <div class="log-panel">
+      <div class="log-header">
+        <h3>🛠️ Local Node Audit Logs (Cryptographic Trace)</h3>
+        <button id="btn-clear-logs" class="btn-text">Clear logs</button>
+      </div>
+      <div class="log-entries" id="log-container">
+        <div class="log-entry system">Initializing local cryptographic context...</div>
+        <div class="log-entry system">SQLCipher local database unlocked successfully (AES-GCM-256).</div>
+        <div class="log-entry system">Ready. Select attributes and generate a transaction token.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
